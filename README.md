@@ -24,3 +24,11 @@ Multi-user blogging website
    `is_superuser` field in the database to identify admin users.
    ➤ This field is **immutable from the frontend UI** for security purposes.
 
+⚙️ Non-Functional Requirements
+Security: Sensitive fields like is_superuser must not be modifiable from the frontend.
+
+Performance: User routes should handle multiple concurrent requests efficiently.
+
+Scalability: The system should support an increasing number of users and posts with minimal changes.
+
+Maintainability: Code should be clean and modular for easy updates and debugging.
