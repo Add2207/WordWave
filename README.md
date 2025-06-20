@@ -1,6 +1,6 @@
 ---
 
-# 📚 BlogWebsite
+# 📚 WordWave
 
 Multi-user blogging website
 
