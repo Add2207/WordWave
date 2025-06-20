@@ -36,4 +36,4 @@ Multi-user blogging website
 * **Maintainability:** Code should be clean and modular for easy updates and debugging.
 
 ---
->>>>>>> origin/main
+
