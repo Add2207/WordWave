@@ -1,42 +1,100 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+/* === Global base === */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: #121212; /* deep dark */
+  color: #f5f5f5;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+
+/* === Page containers === */
+.container,
+.dashboard {
+  flex: 1;               /* fill remaining space after nav */
   padding: 2rem;
-  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;         /* flex fix for overflow */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* === Forms === */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin-bottom: 1rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.form-group input {
+  margin: 0.3rem 0;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* === Buttons === */
+button {
+  background-color: #00BFFF; /* Wave Blue */
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.3s;
 }
 
-.card {
-  padding: 2em;
+button:hover {
+  background-color: #009acd;
 }
 
-.read-the-docs {
-  color: #888;
+/* === Blog post cards === */
+.post-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.post-card {
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 300px;
+  transition: transform 0.2s;
+}
+
+.post-card:hover {
+  transform: scale(1.03);
+}
+
+.post-card h3 {
+  margin-top: 0;
+  color: #00BFFF;
+}
+
+.post-card p {
+  color: #ddd;
+}
+
+.post-card small {
+  color: #aaa;
+}
+
+
+/* Remove any fixed-width container, use full page styling */
+.page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 2rem;
+  color: #fff;
+  background: #111; /* Or match your dark theme */
+  box-sizing: border-box;
 }

@@ -1,0 +1,102 @@
+/* === Admin Dashboard === */
+
+.admin-dashboard {
+  display: flex;
+  height: calc(100vh - 80px); /* Adjust for navbar height if needed */
+  padding: 2rem;
+  gap: 2rem;
+  box-sizing: border-box;
+  color: #fff;
+}
+
+.forms-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-box {
+  background: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex: 1; /* makes both boxes equal height */
+  display: flex;
+  flex-direction: column;
+}
+
+.form-box h2 {
+  margin-top: 0;
+  color: #00BFFF;
+}
+
+.form-box input {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 4px;
+  background: #333;
+  color: #fff;
+}
+
+.form-box button {
+  padding: 0.8rem;
+  background: #00BFFF;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.users-section {
+  flex: 1;
+  background: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-y: auto; /* in case user list is long */
+  display: flex;
+  flex-direction: column;
+}
+
+.users-section h2 {
+  margin-top: 0;
+  color: #00BFFF;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-list li {
+  background: #2a2a2a;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-list button {
+  margin-left: 0.5rem;
+  background: #00BFFF;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@media (max-width: 900px) {
+  .admin-dashboard {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .forms-section, .users-section {
+    flex: none;
+  }
+}
