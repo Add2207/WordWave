@@ -1,0 +1,60 @@
+/* Make sure body & html take full width */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Navbar fills entire screen */
+.navbar {
+  width: 100%;
+  background-color: #000;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+/* Inner container uses flex to space logo & links */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;  /* Ensure no auto-margin centers it */
+  padding: 1rem 2rem;
+}
+
+/* Logo style */
+.logo {
+  color: #00BFFF;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Nav links style */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  color: #00BFFF;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.nav-link:hover {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+.nav-link.active {
+  background: #00BFFF;
+  color: #fff;
+}
