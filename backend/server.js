@@ -1,7 +1,8 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const Database = require("./db");
-const bcrpyt = require("bcrypt");
+const bcrypt = require("bcrypt");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -155,7 +156,7 @@ async function startServer() {
   }
 }
 
-app.post("/api/users", async (req, res) => {
+app.post('/api/users', async (req, res) => {
   try {
     const {
       username,
@@ -164,58 +165,83 @@ app.post("/api/users", async (req, res) => {
       last_name,
       email,
       is_admin,
-      is_superadmin,
-      requester_id,
+      requester_id  // optional
     } = req.body;
 
-    if (!username || !password || !requester_id) {
-      return res.status(400).json({
-        status: "ERROR",
-        message: "Username, password, and requester_id are required",
-      });
+    if (!username || !password) {
+      return res.status(400).json({ status: 'ERROR', message: 'Username and password are required' });
     }
 
-    const requester = await getRequester(requester_id);
-    if (!requester || (!requester.is_admin && !requester.is_superadmin)) {
-      return res
-        .status(403)
-        .json({ status: "ERROR", message: "Permission denied: Admins only" });
+    // Check if there are any users in the DB yet
+    const countRow = await db.db.get(`SELECT COUNT(*) as count FROM users`);
+    const totalUsers = countRow.count;
+
+    if (totalUsers === 0) {
+      // 🚀 No users exist yet — allow bootstrap superadmin
+      console.log('No users found, creating first superadmin...');
+    } else {
+      // Users exist — enforce requester check
+      if (!requester_id) {
+        return res.status(403).json({ status: 'ERROR', message: 'Requester ID required' });
+      }
+
+      const requester = await db.db.get(`SELECT * FROM users WHERE id = ?`, [requester_id]);
+      if (!requester) {
+        return res.status(403).json({ status: 'ERROR', message: 'Unauthorized' });
+      }
+
+      // Only superadmin can add other admins
+      if (is_admin && !requester.is_superadmin) {
+        return res.status(403).json({ status: 'ERROR', message: 'Only superadmin can add admins' });
+      }
+
+      // Only admin or superadmin can add regular users
+      if (!is_admin && !requester.is_admin && !requester.is_superadmin) {
+        return res.status(403).json({ status: 'ERROR', message: 'Only admins can add users' });
+      }
     }
 
-    // Check if requester tries to create another admin or superadmin:
-    if ((is_admin || is_superadmin) && !requester.is_superadmin) {
-      return res.status(403).json({
-        status: "ERROR",
-        message: "Only superadmins can create other admins/superadmins",
-      });
-    }
-
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.db.run(
-      `INSERT INTO users (username, password, first_name, last_name, email, is_active, is_admin, is_superadmin, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, 1, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-      [
+    await db.db.run(`
+      INSERT INTO users (
         username,
-        hashedPassword,
+        password,
         first_name,
         last_name,
         email,
-        is_admin ? 1 : 0,
-        is_superadmin ? 1 : 0,
-      ]
-    );
+        is_active,
+        is_admin,
+        is_superadmin,
+        created_at,
+        updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, 1, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    `,
+    [
+      username,
+      hashedPassword,
+      first_name,
+      last_name,
+      email,
+      is_admin ? 1 : 0,
+      totalUsers === 0 ? 1 : 0  // First user: make superadmin automatically
+    ]);
 
-    res.json({ status: "OK", message: "User created successfully" });
-  } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({
-      status: "ERROR",
-      message: "Internal server error",
-      error: error.message,
+    res.json({
+      status: 'OK',
+      message: totalUsers === 0
+        ? 'First superadmin created successfully'
+        : 'User created successfully'
     });
+
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ status: 'ERROR', message: 'Internal server error', error: error.message });
   }
 });
+
 
 app.put("/api/users/:id", async (req, res) => {
   try {
