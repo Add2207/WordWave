@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import PostCard from './PostCard';
-import '../styles/BlogPosts.css'; // Optional, if you want separate styling
+import CreateBlog from './Create/CreateBlog';
+import '../styles/BlogPosts.css';
 
 export default function BlogPosts() {
-  // Fake articles for now
-  const posts = [
+  // ✅ Now using useState — so we can update posts dynamically!
+  const [posts, setPosts] = useState([
     {
       id: 1,
       title: "Riding the WordWave: How to Write Engaging Blogs",
@@ -21,16 +23,32 @@ export default function BlogPosts() {
       title: "From Idea to Viral Post: A Writer's Journey",
       summary: "A behind-the-scenes look at how great articles come to life and reach thousands.",
       author: "Guest Blogger",
-    }
-  ];
+    },
+  ]);
+
+  // ✅ Called by <CreateBlog />
+  const handleAddPost = (newPost) => {
+    // Give a unique id (for example purposes)
+    const id = posts.length + 1;
+    const postToAdd = {
+      id,
+      ...newPost,
+    };
+    setPosts([postToAdd, ...posts]); // Add to top of feed
+  };
 
   return (
     <div className="page">
-      {/* 🌊 HERO / WELCOME */}
+      {/* 🌊 HERO */}
       <header className="hero">
         <h1>🌊 Welcome to WordWave</h1>
         <p>Ride the wave of words — read, write, and share articles crafted by our vibrant community.</p>
       </header>
+
+      {/* ✍️ CREATE SECTION */}
+      <section className="create-section">
+        <CreateBlog onAddPost={handleAddPost} />
+      </section>
 
       {/* 📚 ARTICLES SECTION */}
       <section className="articles-section">

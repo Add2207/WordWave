@@ -1,102 +1,133 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import '../styles/AdminDashboard.css';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import "../styles/AdminDashboard.css";
+import { useApi } from '../hooks/useApi';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
-  const [loginForm, setLoginForm] = useState({ username: '', password: ''});
-  const [addForm, setAddForm] = useState({username: '', password: '', first_name: '', last_name: '', email:''});
+  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+  const [addForm, setAddForm] = useState({
+    username: "",
+    password: "",
+    first_name: "",
+    last_name: "",
+    email: "",
+    is_admin: false,
+  });
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [token, setToken] = useState("");
 
-  const api = 'http://localhost:3000/api';
+  const api = "http://localhost:3000/api";
+  const axiosInstance = useApi(token, api);
 
-  const fetchUsers = async () => {
-    try {
-      const res = await axios.get(`${api}/users`);
-      setUsers(res.data.users);
-    } catch (error) {
-      console.error(error);
-    }
+const fetchUsers = async (overrideToken) => {
+  try {
+    const res = overrideToken ? await axios.get(`${api}/users`, {
+      headers: {
+        Authorization: `Bearer ${overrideToken || token}`,
+      },
+    }) : await axiosInstance.get("/users");
+    setUsers(res.data.users);
+    console.log("fetched successfully!");
+  } catch (error) {
+    console.error(error);
+    console.log("unable to fetch users!");
   }
+};
 
   const handleLogin = async () => {
-    try {
-      const res = await axios.post(`${api}/auth/login`, loginForm);
-      setLoggedInUser(res.data.user);
-      alert(`Login successful: Welcome ${res.data.user.username}`);
-      fetchUsers();
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-      alert('login failed');
-    }
+  try {
+    const res = await axios.post(`${api}/auth/login`, loginForm);
+    setLoggedInUser(res.data.user);
+    setToken(res.data.token);
+    alert(
+      `✅ Welcome ${res.data.user.username} (${
+        res.data.user.is_superadmin
+          ? "Superadmin"
+          : res.data.user.is_admin
+          ? "Admin"
+          : "User"
+      })`
+    );
+    // ✅ use the token directly from response instead of waiting for state
+    await fetchUsers(res.data.token);
+    console.log("log in successful")
+  } catch (error) {
+    console.error(error);
+    alert("❌ Login failed");
   }
+};
 
   const handleAddUser = async () => {
     if (!loggedInUser) {
-      alert('Please login first.');
+      alert("Please login first.");
       return;
     }
     try {
-      await axios.post(`${api}/users`, {
+      await axiosInstance.post("/users", {
         ...addForm,
         requester_id: loggedInUser.id,
-        // By default, form does not ask for is_admin; only superadmin can add admin manually
-        is_admin: false,
-        is_superadmin: false,
       });
-      alert('User added');
+      alert("✅ User added successfully!");
       fetchUsers();
-      setAddForm({ username: '', password: '', first_name: '', last_name: '', email: '' });
+      setAddForm({
+        username: "",
+        password: "",
+        first_name: "",
+        last_name: "",
+        email: "",
+        is_admin: false,
+      });
     } catch (err) {
       console.error(err);
-      alert('Failed to add user');
+      alert("❌ Failed to add user");
     }
   };
 
   const handleEditUser = async (user) => {
     if (!loggedInUser) {
-      alert('Please login first.');
+      alert("Please login first.");
       return;
     }
 
-    const first_name = prompt('New First Name', user.first_name);
-    const last_name = prompt('New Last Name', user.last_name);
-    const username = prompt('New Username', user.username);
+    const first_name = prompt("New First Name", user.first_name);
+    const last_name = prompt("New Last Name", user.last_name);
+    const username = prompt("New Username", user.username);
 
     if (!first_name || !last_name || !username) return;
 
     try {
-      await axios.put(`${api}/users/${user.id}`, {
+      await axiosInstance.put(`/users/${user.id}`, {
         first_name,
         last_name,
         username,
         requester_id: loggedInUser.id,
       });
-      alert('User updated');
+      alert("✅ User updated");
       fetchUsers();
     } catch (err) {
       console.error(err);
-      alert('Failed to update user');
+      alert("❌ Failed to update user");
     }
   };
 
   const handleDeleteUser = async (user) => {
     if (!loggedInUser) {
-      alert('Please login first.');
+      alert("Please login first.");
       return;
     }
-    if (!window.confirm(`Are you sure you want to delete ${user.username}?`)) return;
+    if (!window.confirm(`Are you sure you want to delete ${user.username}?`))
+      return;
 
     try {
-      await axios.delete(`${api}/users/${user.id}`, {
-        data: { requester_id: loggedInUser.id }
+      await axiosInstance.delete(`/users/${user.id}`, {
+        data: { requester_id: loggedInUser.id },
       });
-      alert('User deleted');
+      alert("✅ User deleted");
       fetchUsers();
     } catch (err) {
       console.error(err);
-      alert('Failed to delete user');
+      alert("❌ Failed to delete user");
     }
   };
 
@@ -126,6 +157,17 @@ export default function AdminDashboard() {
             }
           />
           <button onClick={handleLogin}>Login</button>
+          {loggedInUser && (
+            <p className="login-status">
+              ✅ Logged in as <strong>{loggedInUser.username}</strong> (
+              {loggedInUser.is_superadmin
+                ? "Superadmin"
+                : loggedInUser.is_admin
+                ? "Admin"
+                : "User"}
+              )
+            </p>
+          )}
         </div>
 
         <div className="form-box">
@@ -162,10 +204,21 @@ export default function AdminDashboard() {
           <input
             placeholder="Email"
             value={addForm.email}
-            onChange={(e) =>
-              setAddForm({ ...addForm, email: e.target.value })
-            }
+            onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
           />
+
+          {/* ✅ New toggle for is_admin */}
+          <label>
+            <input
+              type="checkbox"
+              checked={addForm.is_admin}
+              onChange={(e) =>
+                setAddForm({ ...addForm, is_admin: e.target.checked })
+              }
+            />{" "}
+            Is Admin
+          </label>
+
           <button onClick={handleAddUser}>Add User</button>
         </div>
       </div>
@@ -181,7 +234,7 @@ export default function AdminDashboard() {
               </span>
               <div>
                 <button onClick={() => handleEditUser(user)}>Edit</button>
-                <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
+                <button onClick={() => handleDeleteUser(user)}>Delete</button>
               </div>
             </li>
           ))}
