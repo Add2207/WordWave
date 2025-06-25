@@ -1,3 +1,5 @@
+/* BlogPosts.css - Updated with Dark Theme */
+
 /* Make sure your base .page covers full width */
 .page {
   width: 100%;
@@ -5,6 +7,52 @@
   padding: 2rem;
   box-sizing: border-box;
   color: #fff;
+}
+
+/* User Header - Dark Theme */
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 191, 255, 0.1);
+  border: 1px solid rgba(0, 191, 255, 0.2);
+}
+
+.user-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #00BFFF;
+}
+
+.user-info p {
+  margin: 0;
+  opacity: 0.8;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.logout-btn {
+  background: rgba(0, 191, 255, 0.1);
+  color: #00BFFF;
+  border: 2px solid rgba(0, 191, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(0, 191, 255, 0.2);
+  border-color: #00BFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
 }
 
 .hero {
@@ -15,11 +63,37 @@
 .hero h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
+  color: #fff;
 }
 
 .hero p {
   font-size: 1.2rem;
   color: #ccc;
+  margin-bottom: 0.5rem;
+}
+
+/* Create Section Styling */
+.create-section {
+  margin-bottom: 3rem;
+}
+
+/* Clear Posts Button - Dark Theme */
+.create-section button {
+  background: linear-gradient(135deg, #ff4757 0%, #c44569 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.2);
+}
+
+.create-section button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
 }
 
 .articles-section h2 {
@@ -33,4 +107,113 @@
   flex-wrap: wrap;
 }
 
-/* Optional: your PostCard component should handle its own card styling! */
+/* User Post Indicators - Dark Theme */
+.post-indicator {
+  font-size: 12px;
+  text-align: center;
+  margin-top: 8px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.user-post-indicator {
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.sample-post-indicator {
+  color: #888;
+  background: rgba(136, 136, 136, 0.1);
+  border: 1px solid rgba(136, 136, 136, 0.2);
+  font-style: italic;
+}
+
+/* No Posts Message - Dark Theme */
+.no-posts-message {
+  padding: 30px;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  border-radius: 12px;
+  margin: 20px 0;
+  border: 2px dashed #00BFFF;
+  text-align: center;
+}
+
+.no-posts-message h3 {
+  color: #00BFFF;
+  margin-bottom: 10px;
+}
+
+.no-posts-message p {
+  color: #ccc;
+  margin: 0;
+}
+
+/* Footer - Dark Theme */
+.info-footer {
+  margin-top: 40px;
+  padding: 25px;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 191, 255, 0.2);
+  color: #ccc;
+}
+
+.info-footer h4 {
+  color: #00BFFF;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.info-footer ul {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: 600;
+  list-style: none;
+  padding: 0;
+}
+
+.info-footer li {
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.info-footer li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #00BFFF;
+  font-weight: bold;
+}
+
+.info-footer code {
+  background: rgba(0, 191, 255, 0.1);
+  color: #00BFFF;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .user-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .page {
+    padding: 1rem;
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .post-row {
+    gap: 1rem;
+  }
+}
